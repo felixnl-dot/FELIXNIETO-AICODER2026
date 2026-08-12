@@ -1,0 +1,1578 @@
+{
+  "name": "Entrega Final - AI Automation - Comision #97400 - Felix Nieto",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-inbound",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "76e38bdb-7c3a-4a45-9274-86cc5de2a797",
+      "name": "Webhook",
+      "webhookId": "5c5c3139-2599-4d8f-88f4-a90cd97cdb97"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "90bbd5d2-67dd-446f-9ea5-290c60ca68a2",
+              "leftValue": "={{ $json.body.id_propiedad }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "6542afa3-f805-4449-b91a-750b4e0e2398",
+              "leftValue": "={{ $json.body.telefono }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        224,
+        0
+      ],
+      "id": "13c25372-b9d9-4fde-ac35-cae4ff9380fc",
+      "name": "¿Payload válido?"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.topinmobiliario.com/consultarinventario.php?usuario=NLI&clave=P3M4FK9B&CodOferta={{ $('Webhook').item.json.body.id_propiedad }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        320,
+        -224
+      ],
+      "id": "83e57e14-526e-4f17-8e4b-cbbd77506fe6",
+      "name": "HTTP Request: Consultar Ficha Propiedad",
+      "retryOnFail": true,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appi85alNGIlFh98W",
+          "mode": "list",
+          "cachedResultName": "Base Leads - Nieto Lamas Inmuebles",
+          "cachedResultUrl": "https://airtable.com/appi85alNGIlFh98W"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbloA8V1a7xmp7d1h",
+          "mode": "list",
+          "cachedResultName": "Error Log",
+          "cachedResultUrl": "https://airtable.com/appi85alNGIlFh98W/tbloA8V1a7xmp7d1h"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Paso del Flujo": "Inbound Payload",
+            "Payload Recibido": "={{ JSON.stringify($json.body) }}",
+            "Mensaje de Error": "Payload recibido sin ID de propiedad o teléfono"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "ID Error",
+              "displayName": "ID Error",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Paso del Flujo",
+              "displayName": "Paso del Flujo",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Inbound Payload",
+                  "value": "Inbound Payload"
+                },
+                {
+                  "name": "Conexión Jina / Web Scraping",
+                  "value": "Conexión Jina / Web Scraping"
+                },
+                {
+                  "name": "Respuesta / Calificación IA",
+                  "value": "Respuesta / Calificación IA"
+                },
+                {
+                  "name": "API Airtable",
+                  "value": "API Airtable"
+                },
+                {
+                  "name": "Notificación Telegram / Comercial",
+                  "value": "Notificación Telegram / Comercial"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Payload Recibido",
+              "displayName": "Payload Recibido",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Mensaje de Error",
+              "displayName": "Mensaje de Error",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Fecha y Hora",
+              "displayName": "Fecha y Hora",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Relacionado a Lead",
+              "displayName": "Relacionado a Lead",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Severidad",
+              "displayName": "Severidad",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Crítico",
+                  "value": "Crítico"
+                },
+                {
+                  "name": "Alto",
+                  "value": "Alto"
+                },
+                {
+                  "name": "Medio",
+                  "value": "Medio"
+                },
+                {
+                  "name": "Bajo",
+                  "value": "Bajo"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "¿Resuelto?",
+              "displayName": "¿Resuelto?",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Acción Correctiva Recomendada (AI)",
+              "displayName": "Acción Correctiva Recomendada (AI)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        112
+      ],
+      "id": "e0a06251-bb17-499f-94fe-fdaf44c53625",
+      "name": "Airtable: Log Errores",
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "NLsNakypYaIMYQ4b",
+          "name": "Airtable account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appi85alNGIlFh98W",
+          "mode": "list",
+          "cachedResultName": "Base Leads - Nieto Lamas Inmuebles",
+          "cachedResultUrl": "https://airtable.com/appi85alNGIlFh98W"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbloA8V1a7xmp7d1h",
+          "mode": "list",
+          "cachedResultName": "Error Log",
+          "cachedResultUrl": "https://airtable.com/appi85alNGIlFh98W/tbloA8V1a7xmp7d1h"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Paso del Flujo": "Consulta ficha SOM",
+            "Payload Recibido": "={{ JSON.stringify($('Webhook').item.json.body) }}",
+            "Mensaje de Error": "={{ $json.message || 'Error al consultar la API de Top Inmobiliario' }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "ID Error",
+              "displayName": "ID Error",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Paso del Flujo",
+              "displayName": "Paso del Flujo",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Inbound Payload",
+                  "value": "Inbound Payload"
+                },
+                {
+                  "name": "Conexión Jina / Web Scraping",
+                  "value": "Conexión Jina / Web Scraping"
+                },
+                {
+                  "name": "Respuesta / Calificación IA",
+                  "value": "Respuesta / Calificación IA"
+                },
+                {
+                  "name": "API Airtable",
+                  "value": "API Airtable"
+                },
+                {
+                  "name": "Notificación Telegram / Comercial",
+                  "value": "Notificación Telegram / Comercial"
+                },
+                {
+                  "name": "Consulta ficha SOM",
+                  "value": "Consulta ficha SOM"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Payload Recibido",
+              "displayName": "Payload Recibido",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Mensaje de Error",
+              "displayName": "Mensaje de Error",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Fecha y Hora",
+              "displayName": "Fecha y Hora",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Relacionado a Lead",
+              "displayName": "Relacionado a Lead",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Severidad",
+              "displayName": "Severidad",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Crítico",
+                  "value": "Crítico"
+                },
+                {
+                  "name": "Alto",
+                  "value": "Alto"
+                },
+                {
+                  "name": "Medio",
+                  "value": "Medio"
+                },
+                {
+                  "name": "Bajo",
+                  "value": "Bajo"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "¿Resuelto?",
+              "displayName": "¿Resuelto?",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Acción Correctiva Recomendada (AI)",
+              "displayName": "Acción Correctiva Recomendada (AI)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        960,
+        -288
+      ],
+      "id": "3caadbfd-f8db-4ac8-9691-071325358f4b",
+      "name": "Airtable: Log Errores1",
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "NLsNakypYaIMYQ4b",
+          "name": "Airtable account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "a98cd1a8-95d1-4d5f-a99d-89e214a956da",
+              "leftValue": "={{ $('Webhook').item.json.body.referencia_interna }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        688,
+        -432
+      ],
+      "id": "f1038a3a-d00d-4905-95a9-ff99ab40cb28",
+      "name": "¿Existe URL en Referencia Interna?"
+    },
+    {
+      "parameters": {
+        "url": "=https://r.jina.ai/https://nietolamas.com/ficha-inmueble.php?ID=129",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        816,
+        -736
+      ],
+      "id": "7b3baabf-20d1-4883-b127-598742a0ad60",
+      "name": "HTTP: Jina Reader Web Scraping",
+      "retryOnFail": true,
+      "maxTries": 2,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body?.mensaje_original ? \"Consulta: \" + $json.body.mensaje_original : \"\" }}\n\nDatos disponibles:\n{{ JSON.stringify($json) }}",
+        "options": {
+          "systemMessage": "ROL E IDENTIDAD:\nEres la Asistente Comercial Virtual de Nieto Lamas Inmuebles. Tu objetivo es dar un primer contacto cálido, profesional, extremadamente breve y directo.\n\nREGLAS DE LONGITUD Y ESTILO:\n1. BREVEDAD ABSOLUTA: El mensaje completo NO debe superar los 3 a 4 párrafos cortos o viñetas.\n2. DATOS CONCRETOS: No listes toda la ficha técnica. Resume solo lo indispensable: Tipo de propiedad, Ubicación general, Ambientes/m² y Precio.\n3. ALQUILERES: Si hay datos de Jina Reader, resume las condiciones de ingreso en máximo 3 puntos clave (Garantía, Meses de ingreso, Ajuste).\n4. PREVENCIÓN DE ALUCINACIONES Y LOOPS: Usa ÚNICAMENTE los datos provistos. Si falta algún dato, di que está a confirmar. Genera una sola respuesta final sin llamar a más herramientas.\n\nESTRUCTURA OBLIGATORIA DEL MENSAJE:\n1. Saludo inicial breve y formal a nombre de Nieto Lamas Inmuebles.\n2. Resumen ejecutivo de la propiedad (3-4 bullet points con datos concretos).\n3. Cierre con PREGUNTA ABIERTA: Haz una sola pregunta para saber si el cliente desea profundizar en algún detalle o coordinar una visita.\n\nEJEMPLO DE ESTRUCTURA DE SALIDA:\n\"¡Hola! Gracias por comunicarte con Nieto Lamas Inmuebles. Te comparto el resumen de la propiedad por la que consultaste:\n\n• Ubicación: [Ubicación]\n• Ambientes / Superficie: [X] amb. ([Y] m²)\n• Precio: [Valor]\n• Condiciones principales: [Condición 1] | [Condición 2]\n\n¿Te gustaría coordinar una visita para conocerla o querés que te envíe la ficha técnica completa con más detalles?\""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1104,
+        -752
+      ],
+      "id": "91511ea9-9ebe-4733-922a-54f0ceb3d19a",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {
+          "maxTokens": 800
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1104,
+        -576
+      ],
+      "id": "2aff9b2b-0a22-49e6-8f30-51a6b5c3b0e9",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "JFVfAAOb00OrDVXM",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "5837114518",
+        "text": "={{ $json.output }}",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "Coordinar Visita",
+                    "additionalFields": {
+                      "url": "={{ $execution.resumeUrl }}"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1376,
+        -624
+      ],
+      "id": "2cda9bb8-d85e-402d-9c63-fec35ff33b9a",
+      "name": "Send a text message",
+      "webhookId": "44aacd1d-c374-4803-adfd-1e36e039e9ff",
+      "credentials": {
+        "telegramApi": {
+          "id": "i7cN8CPS1ImsMn75",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        480,
+        -400
+      ],
+      "id": "6e666352-bc46-4070-8cb7-83e5d9102dbe",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "resume": "form",
+        "formTitle": "Nieto Lamas Inmuebles",
+        "formDescription": "¡Muchas gracias! Confirmamos tu solicitud de visita. Podés cerrar esta ventana.",
+        "limitWaitTime": true,
+        "resumeUnit": "minutes",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1408,
+        -400
+      ],
+      "id": "ac501e76-c9aa-4b54-b398-fcf25cd825c9",
+      "name": "Wait - IA Aguarda respuesta",
+      "webhookId": "ecc70783-ed8a-4226-a87b-75118b917a2c"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "e0a84ef3-e6ec-4b04-826e-5c073e14f3bd",
+              "leftValue": "={{ $json.submittedAt }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1632,
+        -464
+      ],
+      "id": "d3654934-c4b3-45d8-b651-1ccffba789b2",
+      "name": "¿Cliente respondió?"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.result.chat.id || $node[\"Send a text message\"].json.result.chat.id }}",
+        "text": "¡Hola! Muchas gracias por haberte comunicado con Nieto Lamas Inmuebles. Como no recibimos tu respuesta, damos por finalizada la consulta por este medio. Quedamos a tu entera disposición si deseas retomar la búsqueda en otro momento. ¡Que tengas un excelente día!",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1904,
+        -352
+      ],
+      "id": "012248c8-f545-49e7-818f-ce31328dfc7c",
+      "name": "Telegram: Cierre por Timeout",
+      "webhookId": "f0995351-59bc-43b4-a7fc-0e929e164b64",
+      "credentials": {
+        "telegramApi": {
+          "id": "i7cN8CPS1ImsMn75",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {
+          "maxTokens": 800
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1936,
+        -736
+      ],
+      "id": "a5fb81cc-c836-4df3-985d-9454dc88ee1c",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "JFVfAAOb00OrDVXM",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "El cliente hizo clic en el botón 'Coordinar Visita' para confirmar la cita.",
+        "options": {
+          "systemMessage": "Analizá el mensaje o la acción del cliente.\nSi el cliente presiona o escribe 'Coordinar Visita', o indica que quiere ver la propiedad, responde ÚNICAMENTE: Confirmada.\nEn cualquier otro caso de rechazo o duda, responde Sin intención o Pendiente."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1920,
+        -928
+      ],
+      "id": "42d7481b-8dc9-41ef-af30-900650ae9157",
+      "name": "IA: Analizar Intención"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "f8c353fc-e2f8-41ca-bc47-b45022f7c73a",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "Confirmada",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "57999797-54a5-4b09-8523-dad5947ac5e3",
+              "leftValue": "={{ $json.output || $json.body.message.text }}",
+              "rightValue": "Coordinar Visita",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2304,
+        -944
+      ],
+      "id": "26c76fc6-e9dd-4047-ba37-f664cca16ba0",
+      "name": "¿Confirma intención de cita?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "e0287ccf-412c-44fb-920b-59ad833fddfd",
+              "leftValue": "=",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2528,
+        -1008
+      ],
+      "id": "33e9532f-fd05-441c-8e26-c4f9d455160b",
+      "name": "¿Propiedad localizada en CABA?"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Send a text message').item.json.result.chat.id }}",
+        "text": "¡Muchas gracias por tu tiempo! Si en algún momento querés retomar la consulta sobre la propiedad, estamos a disposición. ¡Que tengas un excelente día!",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2496,
+        -752
+      ],
+      "id": "9c8ac896-7389-407f-afff-c82d86edc243",
+      "name": "Send a text message1",
+      "webhookId": "48e73903-9bc3-4c07-857e-d804b3a0da59",
+      "credentials": {
+        "telegramApi": {
+          "id": "i7cN8CPS1ImsMn75",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "e0287ccf-412c-44fb-920b-59ad833fddfd",
+              "leftValue": "={{ $('Webhook').item.json.body.zona }}",
+              "rightValue": "CABA",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2496,
+        -1024
+      ],
+      "id": "33e9532f-fd05-441c-8e26-c4f9d455160b",
+      "name": "¿Propiedad localizada en CABA?1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c18b8719-f995-4bb1-b287-67a3a3b2cf46",
+              "name": "Vendedor Asignado",
+              "value": "Vendedor CABA",
+              "type": "string"
+            },
+            {
+              "id": "6a891efd-7da2-49a9-9ec9-cbb5914cfaab",
+              "name": "email_vendedor",
+              "value": "felixnl@gmail.com",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        2720,
+        -1104
+      ],
+      "id": "de5614dd-bc38-4fa2-8005-3196f0d2738b",
+      "name": "Set: Vendedor CABA"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "208d6926-60be-4553-abd3-3b5e8bbe236f",
+              "name": "Vendedor Asignado",
+              "value": "Vendedor GBA",
+              "type": "string"
+            },
+            {
+              "id": "c6ef7446-cdbc-4da4-83f6-bff621286e21",
+              "name": "email_vendedor",
+              "value": "felixnl@gmail.com",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        2720,
+        -896
+      ],
+      "id": "e30aeb0e-3522-44fd-8c84-184689471360",
+      "name": "Set: Vendedor GBA"
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appi85alNGIlFh98W",
+          "mode": "list",
+          "cachedResultName": "Base Leads - Nieto Lamas Inmuebles",
+          "cachedResultUrl": "https://airtable.com/appi85alNGIlFh98W"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl4QFNYkgYCtq0Zn",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://airtable.com/appi85alNGIlFh98W/tbl4QFNYkgYCtq0Zn"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID Consulta": "={{ $('Webhook').item.json.body.id_consulta }}",
+            "Nombre Cliente": "={{ $('Webhook').item.json.body.nombre_cliente }}",
+            "Teléfono / Telegram": "={{ $('Webhook').item.json.body.telefono }}",
+            "Correo": "={{ $('Webhook').item.json.body.email }}",
+            "Propiedad / Ref": "={{ $('Webhook').item.json.body.id_propiedad }}",
+            "URL Web": "={{ $('Webhook').item.json.body.referencia_interna }}",
+            "Zona / Ubicación": "={{ $('Webhook').item.json.body.zona }}",
+            "Intención de Cita": "Confirmada",
+            "Resumen IA": "={{ $('AI Agent').item.json.output }}",
+            "Estado HITL": "Pendiente",
+            "Vendedor Asignado": "={{ $json['Vendedor Asignado'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "ID Consulta",
+              "displayName": "ID Consulta",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Nombre Cliente",
+              "displayName": "Nombre Cliente",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Teléfono / Telegram",
+              "displayName": "Teléfono / Telegram",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Correo",
+              "displayName": "Correo",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Propiedad / Ref",
+              "displayName": "Propiedad / Ref",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "URL Web",
+              "displayName": "URL Web",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Zona / Ubicación",
+              "displayName": "Zona / Ubicación",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "CABA",
+                  "value": "CABA"
+                },
+                {
+                  "name": "GBA",
+                  "value": "GBA"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Intención de Cita",
+              "displayName": "Intención de Cita",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Confirmada",
+                  "value": "Confirmada"
+                },
+                {
+                  "name": "Pendiente",
+                  "value": "Pendiente"
+                },
+                {
+                  "name": "No",
+                  "value": "No"
+                },
+                {
+                  "name": "Visita programada",
+                  "value": "Visita programada"
+                },
+                {
+                  "name": "Solicita información",
+                  "value": "Solicita información"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Resumen IA",
+              "displayName": "Resumen IA",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Vendedor Asignado",
+              "displayName": "Vendedor Asignado",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Vendedor CABA",
+                  "value": "Vendedor CABA"
+                },
+                {
+                  "name": "Vendedor GBA",
+                  "value": "Vendedor GBA"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Estado HITL",
+              "displayName": "Estado HITL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Pendiente Aprobación",
+                  "value": "Pendiente Aprobación"
+                },
+                {
+                  "name": "Aprobado",
+                  "value": "Aprobado"
+                },
+                {
+                  "name": "Rechazado",
+                  "value": "Rechazado"
+                },
+                {
+                  "name": "Pendiente",
+                  "value": "Pendiente"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Fecha de Creación",
+              "displayName": "Fecha de Creación",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Aprobación Supervisor",
+              "displayName": "Aprobación Supervisor",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Comentario Supervisor",
+              "displayName": "Comentario Supervisor",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Nivel de Calificación de Lead (AI)",
+              "displayName": "Nivel de Calificación de Lead (AI)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Alta",
+                  "value": "Alta"
+                },
+                {
+                  "name": "Media",
+                  "value": "Media"
+                },
+                {
+                  "name": "Baja",
+                  "value": "Baja"
+                },
+                {
+                  "name": "Alto",
+                  "value": "Alto"
+                },
+                {
+                  "name": "Medio",
+                  "value": "Medio"
+                },
+                {
+                  "name": "Bajo",
+                  "value": "Bajo"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Siguiente Acción Recomendada (AI)",
+              "displayName": "Siguiente Acción Recomendada (AI)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Error Log",
+              "displayName": "Error Log",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        3008,
+        -1008
+      ],
+      "id": "2eb659f3-975f-4c4c-ab3d-8e9002807361",
+      "name": "Create a record",
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "NLsNakypYaIMYQ4b",
+          "name": "Airtable account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Set: Vendedor CABA').isExecuted ? $('Set: Vendedor CABA').item.json.email_vendedor : $('Set: Vendedor GBA').item.json.email_vendedor }}",
+        "subject": "=🚨 Nuevo Lead Asignado: {{ $json.fields['Nombre Cliente'] || 'Consulta Inmobiliaria' }}",
+        "message": "=¡Hola!\n\nSe ha registrado una nueva consulta con intención de visita confirmada en Airtable.\n\nDetalles del Lead:\n• Cliente: {{ $json.fields['Nombre Cliente'] }}\n• Vendedor Asignado: {{ $json.fields['Vendedor Asignado'] }}\n• Resumen de la consulta: {{ $json.fields['Resumen IA'] }}\n\nPor favor, ingresá a Airtable para revisar la ficha y dar el seguimiento correspondiente.\n\nSaludos,\nSistema de Automatización - Nieto Lamas Inmuebles",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        3232,
+        -1008
+      ],
+      "id": "27a263b4-1260-4d70-9414-60d964527d73",
+      "name": "Send a message",
+      "webhookId": "e7cb803d-dfd0-4843-b6e2-e37e93eb8593",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "GyflJE7jnAyHhmT9",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        912,
+        16
+      ],
+      "id": "a927e224-96e0-4b32-ab82-9102f769e7f9",
+      "name": "Error Trigger"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "body": {
+            "id_consulta": "CR-98421",
+            "nombre_cliente": "Juan Pérez",
+            "telefono": "+5491112345678",
+            "email": "juanperez@email.com",
+            "id_propiedad": "12345",
+            "referencia_interna": "https://nietolamas.com/propiedad/departamento-3-ambientes-olivos",
+            "zona": "GBA",
+            "mensaje_original": "Hola, quería consultar requisitos de ingreso y coordinar una visita para este departamento."
+          }
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "¿Payload válido?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Payload válido?": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request: Consultar Ficha Propiedad",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Airtable: Log Errores",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request: Consultar Ficha Propiedad": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Airtable: Log Errores1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Existe URL en Referencia Interna?": {
+      "main": [
+        [
+          {
+            "node": "HTTP: Jina Reader Web Scraping",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP: Jina Reader Web Scraping": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Airtable: Log Errores1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable: Log Errores1": {
+      "main": [
+        []
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "¿Existe URL en Referencia Interna?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        [
+          {
+            "node": "Wait - IA Aguarda respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait - IA Aguarda respuesta": {
+      "main": [
+        [
+          {
+            "node": "¿Cliente respondió?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Cliente respondió?": {
+      "main": [
+        [
+          {
+            "node": "IA: Analizar Intención",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram: Cierre por Timeout",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "IA: Analizar Intención",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IA: Analizar Intención": {
+      "main": [
+        [
+          {
+            "node": "¿Confirma intención de cita?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Confirma intención de cita?": {
+      "main": [
+        [
+          {
+            "node": "¿Propiedad localizada en CABA?1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Propiedad localizada en CABA?1": {
+      "main": [
+        [
+          {
+            "node": "Set: Vendedor CABA",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set: Vendedor GBA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set: Vendedor CABA": {
+      "main": [
+        [
+          {
+            "node": "Create a record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set: Vendedor GBA": {
+      "main": [
+        [
+          {
+            "node": "Create a record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a record": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Airtable: Log Errores",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "0abe3315-c926-42ae-92c1-7e48d1a9a2c0",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "29189dc626764de2b90677683a6cf7d710d1fb4521dbe3e88b9fd31919a0108c"
+  },
+  "nodeGroups": [],
+  "id": "CakGOucL4w43uR1t",
+  "tags": []
+}
