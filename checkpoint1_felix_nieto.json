@@ -1,0 +1,301 @@
+{
+  "name": "checkpoint1_felix_nieto",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "7261df8c-788c-4ff3-a411-97eee3d21fb9",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "234acd55-e9cd-43f9-ac55-7b689b88a6f1",
+              "name": "Cliente",
+              "value": "Hola, soy Martín, quiero agendar una visita para ver el depto de Olivos el jueves a las 15 hs",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        160,
+        16
+      ],
+      "id": "59fd485e-74fb-471c-a50a-6ed33872ebfa",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.Cliente }}",
+        "options": {
+          "systemMessage": "# ROL CORPORATIVO\nEres el Asistente Comercial Ejecutivo de Nieto Lamas Inmuebles, especializado en la atención de clientes interesados en propiedades residenciales en CABA y GBA.\n\n# OBJETIVOS COMERCIALES DE LA SESIÓN\n1. Identificar la intención del cliente (consulta general o solicitud de visita).\n2. Consultar disponibilidad o registrar el interés del cliente utilizando las herramientas conectadas.\n3. Confirmar de manera clara y cordial los próximos pasos al cliente.\n\n# RESTRICCIONES EXPLÍCITAS DE ACCIÓN\n- Utiliza exclusivamente español formal estándar; queda estrictamente prohibido el uso de lenguaje inclusivo (no emplear \"x\", \"e\" o \"@\" en reemplazo de género).\n- No inventes disponibilidad horaria, precios ni direcciones que no surjan de las herramientas o del mensaje del usuario.\n- No ejecutes herramientas de escritura si el cliente aún no especificó qué propiedad desea visitar o su nombre de contacto.",
+          "maxIterations": 5
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        384,
+        0
+      ],
+      "id": "efcca433-b401-4f5c-9da2-3a39c14395cc",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        304,
+        192
+      ],
+      "id": "36a99f93-eac6-4a8a-b54d-a57a9ed3a738",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "JFVfAAOb00OrDVXM",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Utiliza esta herramienta de forma autónoma ÚNICAMENTE cuando el cliente manifieste una intención explícita de agendar una visita presencial o coordinar una reunión comercial y haya brindado su nombre y propiedad/horario de interés. Sirve para registrar la solicitud de cita en la planilla de visitas.",
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1Q1_laxGBqxDYhjJbE6YxVDG7QHd2hzhwu99itrXVIKI/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Q1_laxGBqxDYhjJbE6YxVDG7QHd2hzhwu99itrXVIKI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Fecha": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Fecha', ``, 'string') }}",
+            "Nombre": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Nombre', ``, 'string') }}",
+            "Telefono": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Telefono', ``, 'string') }}",
+            "Email": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Email', ``, 'string') }}",
+            "Interes": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Interes', ``, 'string') }}",
+            "Zona": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Zona', ``, 'string') }}",
+            "Presupuesto": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Presupuesto', ``, 'string') }}",
+            "Estado": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Estado', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Fecha",
+              "displayName": "Fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Nombre",
+              "displayName": "Nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Telefono",
+              "displayName": "Telefono",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Interes",
+              "displayName": "Interes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Zona",
+              "displayName": "Zona",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Presupuesto",
+              "displayName": "Presupuesto",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Estado",
+              "displayName": "Estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        544,
+        208
+      ],
+      "id": "83b741d4-9dd9-4a51-99bf-9f733dbba55b",
+      "name": "Append or update row in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6CedHrMaGFHOGxnL",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "felixnl@gmail.com",
+        "subject": "Reporte de Observabilidad - Ejecución Agente IA",
+        "message": "=Ejecución finalizada del Tools Agent.  Respuesta generada al cliente: {{ $json.output }}  ID de Ejecución (Log): {{ $execution.id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        752,
+        0
+      ],
+      "id": "a377809e-0cd3-49ee-a530-994e0ab1029e",
+      "name": "Send a message",
+      "webhookId": "bb3cb15d-c525-4eba-aae5-5a71a61e8379",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "GyflJE7jnAyHhmT9",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "01b1e1e4-9475-407f-aa84-a3775c8fb899",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "29189dc626764de2b90677683a6cf7d710d1fb4521dbe3e88b9fd31919a0108c"
+  },
+  "nodeGroups": [],
+  "id": "p4ce6uChEJi45iBj",
+  "tags": []
+}
